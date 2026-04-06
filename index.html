@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔥 Bài Thi Trắc Nghiệm Sinh Động</title>
+<title>🔥 Bài Thi Trắc Nghiệm</title>
 <style>
 /* ===== BODY ===== */
 body {
@@ -74,8 +74,8 @@ header h1 {font-size:1.5rem; margin:0;}
 }
 .answers button:hover {background:#d0d7de;}
 .answers button.selected {background:#3498db; color:white;}
-.answers button.correct::before {content:"✔️ ";}
-.answers button.wrong::before {content:"❌ ";}
+.answers button.correct {background:#2ecc71; color:white;}
+.answers button.wrong {background:#e74c3c; color:white;}
 
 /* ===== NỘP BÀI ===== */
 #submitBtn {
@@ -95,29 +95,14 @@ header h1 {font-size:1.5rem; margin:0;}
 #submitBtn:hover {opacity:0.9;}
 
 /* ===== KẾT QUẢ ===== */
-#resultModal {
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.6);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:2000;
+#scoreDiv {
+    max-width:900px;
+    margin:20px auto;
+    font-size:1.2rem;
+    font-weight:bold;
+    text-align:center;
+    color:#34495e;
 }
-#resultContent {
-    background:white;
-    max-width:600px;
-    width:90%;
-    max-height:80%;
-    overflow-y:auto;
-    border-radius:12px;
-    padding:20px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.3);
-}
-#resultContent h2 {margin-top:0;}
-.result-item {margin-bottom:12px; font-size:0.95rem;}
-.result-item.correct {color:#2ecc71;}
-.result-item.wrong {color:#e74c3c;}
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:768px){
@@ -145,15 +130,7 @@ header h1 {font-size:1.5rem; margin:0;}
 
 <div id="questionsContainer"></div>
 <button id="submitBtn">Nộp bài</button>
-
-<!-- POPUP KẾT QUẢ -->
-<div id="resultModal">
-<div id="resultContent">
-<h2>Kết quả bài thi</h2>
-<div id="resultList"></div>
-<button onclick="closeResult()" style="margin-top:15px;padding:10px 15px;border:none;border-radius:6px;background:#3498db;color:white;cursor:pointer;">Đóng</button>
-</div>
-</div>
+<div id="scoreDiv"></div>
 
 <script>
 // ===== CÂU HỎI =====
@@ -219,11 +196,7 @@ document.getElementById("submitBtn").addEventListener("click",submitQuiz);
 
 function submitQuiz(){
     clearInterval(timerInterval);
-    const resultList = document.getElementById("resultList");
-    resultList.innerHTML="";
-
-    let correctCount = 0;
-    const correctQuestions = [];
+    let correctCount=0;
 
     questions.forEach((q,i)=>{
         const btns = container.children[i].querySelectorAll("button");
@@ -232,30 +205,10 @@ function submitQuiz(){
             if(idx===q.shuffledCorrect) btn.classList.add("correct");
             if(q.userAnswer===idx && q.userAnswer!==q.shuffledCorrect) btn.classList.add("wrong");
         });
-
-        if(q.userAnswer === q.shuffledCorrect){
-            correctCount++;
-            correctQuestions.push(`Câu ${i+1}: ${q.answers[q.correct]}`);
-        }
+        if(q.userAnswer===q.shuffledCorrect) correctCount++;
     });
 
-    // Hiển thị tổng điểm
-    const scoreDiv = document.createElement("div");
-    scoreDiv.style.fontWeight="bold";
-    scoreDiv.style.marginBottom="10px";
-    scoreDiv.innerHTML = `Tổng điểm: ${correctCount} / ${TOTAL_QUESTIONS}`;
-    resultList.appendChild(scoreDiv);
-
-    // Hiển thị danh sách các câu đúng
-    const listDiv = document.createElement("div");
-    listDiv.innerHTML = "<strong>Các câu trả lời đúng:</strong><br>" + correctQuestions.join("<br>");
-    resultList.appendChild(listDiv);
-
-    document.getElementById("resultModal").style.display="flex";
-}
-
-function closeResult(){
-    document.getElementById("resultModal").style.display="none";
+    document.getElementById("scoreDiv").textContent=`Tổng điểm: ${correctCount} / ${TOTAL_QUESTIONS}`;
 }
 </script>
 </body>
