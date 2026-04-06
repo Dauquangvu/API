@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thi Thật 50/200 câu</title>
+<title>Thi Thật 50/200 Câu</title>
 <style>
 body { font-family: Arial,sans-serif; background:#f4f6f9; padding:20px;}
-h1 { text-align:center; color:red; }
+h1 { text-align:center; color:red; margin-bottom:10px; }
 .timer { font-size:20px; color:blue; text-align:center; margin-bottom:20px; }
 .question { background:white; padding:15px; margin-bottom:10px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
 .options label { display:block; margin:5px 0; }
@@ -19,16 +19,16 @@ button:hover { background:darkred; }
 <body>
 
 <h1>🔥 THI THẬT – 50/200 Câu</h1>
-<div class="timer" id="timer">30:00</div>
+<div class="timer" id="timer">45:00</div>
 <div id="quiz"></div>
 <button id="submitBtn">Nộp bài</button>
 <div id="result"></div>
 
 <script>
-// ======= DỮ LIỆU CÂU HỎI =======
-// Mỗi câu: {question: "...", options:["A","B","C","D"], answer:"A"}
-const allQuestions = [
-   {
+// ======= DỮ LIỆU GỐC – NƠI ĐIỀN 200 CÂU =======
+// Mỗi câu dạng: {q: "Câu hỏi", answers:["A","B","C","D"], correct: 0-3}
+const rawQuestions = [
+{
 q: "Đồng chí cho biết Thủ đoạn chiến lược “diễn biến hòa bình” của các thế lực thù địch chống phá cách mạng Việt Nam là gì?",
 answers: [
 "Chống phá trên lĩnh vực chính trị; chống phá trên lĩnh vực tư tưởng, văn hóa; chống phá trên lĩnh vực xã hội; chống phá trên lĩnh vực quốc phòng, an ninh; chống phá trên lĩnh vực đối ngoại",
@@ -1120,54 +1120,63 @@ correct: 3
 }
 ];
 
+// ======= CHUYỂN SANG DẠNG SỬ DỤNG TRONG BÀI THI =======
+const allQuestions = rawQuestions.map(item => {
+  const letters = ["A","B","C","D"];
+  return {
+    question: item.q,
+    options: item.answers,
+    answer: letters[item.correct]
+  };
+});
+
 // ======= LẤY NGẪU NHIÊN 50 CÂU =======
 function getRandomQuestions(arr, n){
-    const shuffled = arr.sort(()=>0.5-Math.random());
-    return shuffled.slice(0,n);
+  const shuffled = arr.sort(()=>0.5-Math.random());
+  return shuffled.slice(0,n);
 }
-
 const quizQuestions = getRandomQuestions(allQuestions, 50);
 
 // ======= HIỂN THỊ CÂU HỎI =======
 const quizDiv = document.getElementById("quiz");
 quizQuestions.forEach((q,i)=>{
-    const div = document.createElement("div");
-    div.className = "question";
-    div.innerHTML = `<p><b>Câu ${i+1}:</b> ${q.question}</p>
-                     <div class="options">
-                     ${q.options.map(o=>`<label><input type="radio" name="q${i}" value="${o}"> ${o}</label>`).join('')}
-                     </div>`;
-    quizDiv.appendChild(div);
+  const div = document.createElement("div");
+  div.className = "question";
+  div.innerHTML = `<p><b>Câu ${i+1}:</b> ${q.question}</p>
+                   <div class="options">
+                   ${q.options.map((o,j)=>`<label><input type="radio" name="q${i}" value="${String.fromCharCode(65+j)}"> ${o}</label>`).join('')}
+                   </div>`;
+  quizDiv.appendChild(div);
 });
 
 // ======= ĐẾM NGƯỢC 45 PHÚT =======
 let timeLeft = 45*60; // 45 phút
 const timerEl = document.getElementById("timer");
 const timerInterval = setInterval(()=>{
-    let m = Math.floor(timeLeft/60);
-    let s = timeLeft%60;
-    timerEl.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-    if(timeLeft<=0){
-        clearInterval(timerInterval);
-        alert("Hết giờ! Tự động nộp bài.");
-        submitQuiz();
-    }
-    timeLeft--;
+  let m = Math.floor(timeLeft/60);
+  let s = timeLeft%60;
+  timerEl.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+  if(timeLeft<=0){
+    clearInterval(timerInterval);
+    alert("Hết giờ! Tự động nộp bài.");
+    submitQuiz();
+  }
+  timeLeft--;
 },1000);
 
 // ======= NỘP BÀI & BÁO KẾT QUẢ =======
 function submitQuiz(){
-    clearInterval(timerInterval);
-    let score=0;
-    let wrongList=[];
-    quizQuestions.forEach((q,i)=>{
-        const selected = document.querySelector(`input[name=q${i}]:checked`);
-        if(selected && selected.value===q.answer) score++;
-        else wrongList.push(`Câu ${i+1}`);
-    });
-    const resultDiv = document.getElementById("result");
-    resultDiv.innerHTML = `<h2>Kết quả: ${score}/50</h2>
-                           ${wrongList.length>0? `<p class="wrong">Sai: ${wrongList.join(", ")}</p>` : `<p class="correct">Tất cả đúng!</p>`}`;
+  clearInterval(timerInterval);
+  let score=0;
+  let wrongList=[];
+  quizQuestions.forEach((q,i)=>{
+    const selected = document.querySelector(`input[name=q${i}]:checked`);
+    if(selected && selected.value===q.answer) score++;
+    else wrongList.push(`Câu ${i+1}`);
+  });
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = `<h2>Kết quả: ${score}/50</h2>
+                         ${wrongList.length>0? `<p class="wrong">Sai: ${wrongList.join(", ")}</p>` : `<p class="correct">Tất cả đúng!</p>`}`;
 }
 
 document.getElementById("submitBtn").addEventListener("click", submitQuiz);
