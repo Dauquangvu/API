@@ -45,6 +45,8 @@ header h1 {font-size:1.5rem; margin:0;}
     box-shadow:0 4px 15px rgba(0,0,0,0.1);
     padding:15px 20px;
     transition: transform 0.3s, box-shadow 0.3s;
+    display:flex;
+    flex-direction:column;
 }
 .question-card:hover{
     transform: translateY(-4px);
@@ -53,7 +55,8 @@ header h1 {font-size:1.5rem; margin:0;}
 .question-text {
     font-weight:bold;
     margin-bottom:12px;
-    font-size:1rem;
+    font-size:1.1rem;
+    text-align:justify;
 }
 
 /* ===== BUTTON ĐÁP ÁN ===== */
@@ -64,12 +67,13 @@ header h1 {font-size:1.5rem; margin:0;}
     gap:10px;
     width:100%;
     margin-bottom:8px;
-    padding:10px 12px;
+    padding:12px 15px;
     border:none;
     border-radius:8px;
     background:#ecf0f1;
     cursor:pointer;
-    font-size:0.95rem;
+    font-size:1rem;
+    text-align:left;
     transition: all 0.2s;
 }
 .answers button:hover {background:#d0d7de;}
@@ -98,7 +102,7 @@ header h1 {font-size:1.5rem; margin:0;}
 #scoreDiv {
     max-width:900px;
     margin:20px auto;
-    font-size:1.2rem;
+    font-size:1.3rem;
     font-weight:bold;
     text-align:center;
     color:#34495e;
@@ -107,17 +111,17 @@ header h1 {font-size:1.5rem; margin:0;}
 /* ===== RESPONSIVE ===== */
 @media(max-width:768px){
     header h1{font-size:1.3rem;}
-    #timer{font-size:1rem;}
-    .question-text{font-size:0.95rem;}
-    .answers button{font-size:0.9rem;padding:8px;}
-    #submitBtn{font-size:1rem;padding:10px;}
+    #timer{font-size:1.1rem;}
+    .question-text{font-size:1rem;}
+    .answers button{font-size:0.95rem;padding:10px;}
+    #submitBtn{font-size:1.05rem;padding:10px;}
 }
 @media(max-width:480px){
     header h1{font-size:1.1rem;}
-    #timer{font-size:0.9rem;}
-    .question-text{font-size:0.9rem;}
-    .answers button{font-size:0.85rem;padding:6px;}
-    #submitBtn{font-size:0.95rem;padding:8px;}
+    #timer{font-size:1rem;}
+    .question-text{font-size:0.95rem;}
+    .answers button{font-size:0.9rem;padding:8px;}
+    #submitBtn{font-size:1rem;padding:8px;}
 }
 </style>
 </head>
@@ -726,6 +730,13 @@ const timerInterval=setInterval(()=>{
 document.getElementById("submitBtn").addEventListener("click",submitQuiz);
 
 function submitQuiz(){
+    // Bắt buộc chọn tất cả câu
+    const unanswered = questions.some(q=>q.userAnswer===undefined);
+    if(unanswered){
+        alert("Bạn phải chọn đáp án cho tất cả câu hỏi trước khi nộp!");
+        return;
+    }
+
     clearInterval(timerInterval);
     let correctCount=0;
 
