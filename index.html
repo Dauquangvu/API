@@ -3,30 +3,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thi Thật 50/200 Câu</title>
+<title>Thi Trắc Nghiệm Nâng Cao</title>
 <style>
-body { font-family: Arial,sans-serif; background:#f4f6f9; padding:20px;}
-h1 { text-align:center; color:red; margin-bottom:10px; }
-.timer { font-size:20px; color:blue; text-align:center; margin-bottom:20px; }
-.question { background:white; padding:15px; margin-bottom:10px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
-.options label { display:block; margin:5px 0; }
-button { padding:10px 20px; font-size:16px; border:none; border-radius:6px; background:red; color:white; cursor:pointer; margin-top:20px; }
-button:hover { background:darkred; }
-.correct { color:green; font-weight:bold; }
-.wrong { color:red; font-weight:bold; }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f7fa;
+        margin:0;
+        padding:20px;
+    }
+
+    h1 {
+        text-align:center;
+        font-size:2rem;
+        margin-bottom:10px;
+        color:#c0392b;
+        text-shadow: 0 0 5px #f1c40f;
+    }
+
+    #timer {
+        font-size:1.5rem;
+        text-align:center;
+        margin-bottom:20px;
+        font-weight:bold;
+        color:#2c3e50;
+    }
+
+    #timer.urgent {
+        color:red;
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        0%, 50%, 100% { opacity: 1; }
+        25%, 75% { opacity: 0; }
+    }
+
+    .question-card {
+        background:white;
+        padding:20px;
+        margin-bottom:15px;
+        border-radius:10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .question-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .question-text {
+        font-weight:bold;
+        margin-bottom:10px;
+    }
+
+    .answers button {
+        display:block;
+        width:100%;
+        text-align:left;
+        margin-bottom:8px;
+        padding:10px;
+        border:none;
+        border-radius:6px;
+        background:#ecf0f1;
+        cursor:pointer;
+        transition: background 0.2s;
+    }
+
+    .answers button:hover {
+        background:#d0d7de;
+    }
+
+    .answers button.selected {
+        background:#3498db;
+        color:white;
+    }
+
+    button#submitBtn {
+        background: linear-gradient(45deg,#e74c3c,#c0392b);
+        color:white;
+        font-size:1.2rem;
+        padding:15px 30px;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+        margin-top:20px;
+        display:block;
+        width:100%;
+    }
+
+    button#submitBtn:hover {
+        opacity:0.9;
+    }
+
+    #result {
+        margin-top:20px;
+        padding:20px;
+        background:white;
+        border-radius:10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .correct { background:#2ecc71 !important; color:white; }
+    .wrong { background:#e74c3c !important; color:white; }
 </style>
 </head>
 <body>
 
-<h1>🔥 THI THẬT – 50/200 Câu</h1>
-<div class="timer" id="timer">45:00</div>
-<div id="quiz"></div>
+<h1>🔥 Bài Thi Trắc Nghiệm</h1>
+<div id="timer">Thời gian: 45:00</div>
+
+<div id="questionsContainer"></div>
+
 <button id="submitBtn">Nộp bài</button>
+
 <div id="result"></div>
 
 <script>
-// ======= DỮ LIỆU GỐC – NƠI ĐIỀN 200 CÂU =======
-// Mỗi câu dạng: {q: "Câu hỏi", answers:["A","B","C","D"], correct: 0-3}
+/* ====== Cấu trúc câu hỏi ======
+q = câu hỏi
+answers = mảng 4 phương án
+correct = số 0-3 tương ứng A-D
+*/
 const rawQuestions = [
 {
 q: "Đồng chí cho biết Thủ đoạn chiến lược “diễn biến hòa bình” của các thế lực thù địch chống phá cách mạng Việt Nam là gì?",
@@ -1120,67 +1218,67 @@ correct: 3
 }
 ];
 
-// ======= CHUYỂN SANG DẠNG SỬ DỤNG TRONG BÀI THI =======
-const allQuestions = rawQuestions.map(item => {
-  const letters = ["A","B","C","D"];
-  return {
-    question: item.q,
-    options: item.answers,
-    answer: letters[item.correct]
-  };
+const TOTAL_QUESTIONS = 50; // Số câu xuất hiện khi thi thật
+
+// Random 50 câu
+const questions = rawQuestions.sort(()=>0.5-Math.random()).slice(0,TOTAL_QUESTIONS);
+
+const container = document.getElementById("questionsContainer");
+
+questions.forEach((q,i)=>{
+    const card = document.createElement("div");
+    card.classList.add("question-card");
+    card.innerHTML = `<div class="question-text">Câu ${i+1}: ${q.q}</div>
+                      <div class="answers"></div>`;
+    const answersDiv = card.querySelector(".answers");
+    q.answers.forEach((a,j)=>{
+        const btn = document.createElement("button");
+        btn.textContent = a;
+        btn.addEventListener("click",()=>{
+            answersDiv.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
+            btn.classList.add("selected");
+            q.userAnswer = j;
+        });
+        answersDiv.appendChild(btn);
+    });
+    container.appendChild(card);
 });
 
-// ======= LẤY NGẪU NHIÊN 50 CÂU =======
-function getRandomQuestions(arr, n){
-  const shuffled = arr.sort(()=>0.5-Math.random());
-  return shuffled.slice(0,n);
-}
-const quizQuestions = getRandomQuestions(allQuestions, 50);
-
-// ======= HIỂN THỊ CÂU HỎI =======
-const quizDiv = document.getElementById("quiz");
-quizQuestions.forEach((q,i)=>{
-  const div = document.createElement("div");
-  div.className = "question";
-  div.innerHTML = `<p><b>Câu ${i+1}:</b> ${q.question}</p>
-                   <div class="options">
-                   ${q.options.map((o,j)=>`<label><input type="radio" name="q${i}" value="${String.fromCharCode(65+j)}"> ${o}</label>`).join('')}
-                   </div>`;
-  quizDiv.appendChild(div);
-});
-
-// ======= ĐẾM NGƯỢC 45 PHÚT =======
-let timeLeft = 45*60; // 45 phút
+// ====== Đồng hồ đếm ngược 45 phút ======
+let timeLeft = 45*60; // giây
 const timerEl = document.getElementById("timer");
+
 const timerInterval = setInterval(()=>{
-  let m = Math.floor(timeLeft/60);
-  let s = timeLeft%60;
-  timerEl.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-  if(timeLeft<=0){
-    clearInterval(timerInterval);
-    alert("Hết giờ! Tự động nộp bài.");
-    submitQuiz();
-  }
-  timeLeft--;
+    const min = Math.floor(timeLeft/60);
+    const sec = timeLeft%60;
+    timerEl.textContent = `Thời gian: ${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    if(timeLeft<=5*60) timerEl.classList.add("urgent");
+    if(timeLeft<=0){
+        clearInterval(timerInterval);
+        submitQuiz();
+    }
+    timeLeft--;
 },1000);
 
-// ======= NỘP BÀI & BÁO KẾT QUẢ =======
+// ====== Nộp bài ======
+const submitBtn = document.getElementById("submitBtn");
+submitBtn.addEventListener("click",submitQuiz);
+
 function submitQuiz(){
-  clearInterval(timerInterval);
-  let score=0;
-  let wrongList=[];
-  quizQuestions.forEach((q,i)=>{
-    const selected = document.querySelector(`input[name=q${i}]:checked`);
-    if(selected && selected.value===q.answer) score++;
-    else wrongList.push(`Câu ${i+1}`);
-  });
-  const resultDiv = document.getElementById("result");
-  resultDiv.innerHTML = `<h2>Kết quả: ${score}/50</h2>
-                         ${wrongList.length>0? `<p class="wrong">Sai: ${wrongList.join(", ")}</p>` : `<p class="correct">Tất cả đúng!</p>`}`;
+    clearInterval(timerInterval);
+    let score = 0;
+    questions.forEach(q=>{
+        const cardBtns = [...document.querySelectorAll(".question-card")][questions.indexOf(q)].querySelectorAll("button");
+        cardBtns.forEach((btn,idx)=>{
+            btn.disabled = true;
+            if(idx===q.correct) btn.classList.add("correct");
+            if(q.userAnswer===idx && q.userAnswer!==q.correct) btn.classList.add("wrong");
+        });
+        if(q.userAnswer===q.correct) score++;
+    });
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = `<h2>Kết quả: ${score}/${TOTAL_QUESTIONS}</h2>`;
 }
-
-document.getElementById("submitBtn").addEventListener("click", submitQuiz);
 </script>
-
 </body>
 </html>
