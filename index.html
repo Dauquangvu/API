@@ -221,6 +221,10 @@ function submitQuiz(){
     clearInterval(timerInterval);
     const resultList = document.getElementById("resultList");
     resultList.innerHTML="";
+
+    let correctCount = 0;
+    const correctQuestions = [];
+
     questions.forEach((q,i)=>{
         const btns = container.children[i].querySelectorAll("button");
         btns.forEach((btn,idx)=>{
@@ -228,11 +232,25 @@ function submitQuiz(){
             if(idx===q.shuffledCorrect) btn.classList.add("correct");
             if(q.userAnswer===idx && q.userAnswer!==q.shuffledCorrect) btn.classList.add("wrong");
         });
-        const div = document.createElement("div");
-        div.className="result-item "+(q.userAnswer===q.shuffledCorrect?"correct":"wrong");
-        div.innerHTML=`Câu ${i+1}: ${q.userAnswer===q.shuffledCorrect?"Đúng":"Sai"} | Đáp án đúng: ${q.answers[q.correct]}`;
-        resultList.appendChild(div);
+
+        if(q.userAnswer === q.shuffledCorrect){
+            correctCount++;
+            correctQuestions.push(`Câu ${i+1}: ${q.answers[q.correct]}`);
+        }
     });
+
+    // Hiển thị tổng điểm
+    const scoreDiv = document.createElement("div");
+    scoreDiv.style.fontWeight="bold";
+    scoreDiv.style.marginBottom="10px";
+    scoreDiv.innerHTML = `Tổng điểm: ${correctCount} / ${TOTAL_QUESTIONS}`;
+    resultList.appendChild(scoreDiv);
+
+    // Hiển thị danh sách các câu đúng
+    const listDiv = document.createElement("div");
+    listDiv.innerHTML = "<strong>Các câu trả lời đúng:</strong><br>" + correctQuestions.join("<br>");
+    resultList.appendChild(listDiv);
+
     document.getElementById("resultModal").style.display="flex";
 }
 
