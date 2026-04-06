@@ -5,86 +5,79 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🔥 Bài Thi Trắc Nghiệm Sinh Động</title>
 <style>
-/* ===== BODY & TIÊU ĐỀ ===== */
+/* ===== BODY ===== */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f7fa;
+    background: #f0f2f5;
     margin:0;
     padding:0;
 }
+
+/* ===== HEADER ===== */
 header {
     position: sticky;
     top:0;
-    background: #2c3e50;
+    background:#34495e;
     color:white;
-    padding:10px 15px;
-    z-index:1000;
+    padding:12px 20px;
     display:flex;
     justify-content: space-between;
-    align-items: center;
+    align-items:center;
+    z-index:1000;
 }
-header h1 {
-    font-size:1.5rem;
-    margin:0;
-}
-#timer {
-    font-weight:bold;
-    font-size:1.2rem;
-}
-#timer.urgent { color:red; animation: blink 1s infinite; }
-@keyframes blink {
-    0%,50%,100% {opacity:1;}
-    25%,75% {opacity:0;}
-}
+header h1 {font-size:1.5rem; margin:0;}
+#timer {font-weight:bold; font-size:1.2rem;}
+#timer.urgent {color:#e74c3c; animation: blink 1s infinite;}
+@keyframes blink{0%,50%,100%{opacity:1;}25%,75%{opacity:0;}}
 
 /* ===== CONTAINER ===== */
 #questionsContainer {
-    max-width: 900px;
-    margin: 20px auto;
+    max-width:900px;
+    margin:20px auto;
     padding:0 10px;
 }
 
 /* ===== CARD CÂU HỎI ===== */
 .question-card {
-    background:white;
-    margin-bottom:15px;
+    background: linear-gradient(145deg,#ffffff,#e8f0fe);
+    margin-bottom:18px;
     border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
-    padding:15px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+    padding:15px 20px;
     transition: transform 0.3s, box-shadow 0.3s;
 }
-.question-card:hover {
-    transform: translateY(-3px);
-    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+.question-card:hover{
+    transform: translateY(-4px);
+    box-shadow:0 8px 25px rgba(0,0,0,0.15);
 }
 .question-text {
     font-weight:bold;
-    margin-bottom:10px;
+    margin-bottom:12px;
     font-size:1rem;
 }
 
 /* ===== BUTTON ĐÁP ÁN ===== */
 .answers button {
-    display:block;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:10px;
     width:100%;
-    text-align:left;
     margin-bottom:8px;
-    padding:10px;
+    padding:10px 12px;
     border:none;
-    border-radius:6px;
+    border-radius:8px;
     background:#ecf0f1;
     cursor:pointer;
-    transition: all 0.2s;
     font-size:0.95rem;
+    transition: all 0.2s;
 }
 .answers button:hover {background:#d0d7de;}
 .answers button.selected {background:#3498db; color:white;}
+.answers button.correct::before {content:"✔️ ";}
+.answers button.wrong::before {content:"❌ ";}
 
-/* ===== SAU KHI NỘP ===== */
-.correct {background:#2ecc71 !important; color:white;}
-.wrong {background:#e74c3c !important; color:white;}
-
-/* ===== NÚT NỘP BÀI ===== */
+/* ===== NỘP BÀI ===== */
 #submitBtn {
     display:block;
     width:90%;
@@ -102,49 +95,70 @@ header h1 {
 #submitBtn:hover {opacity:0.9;}
 
 /* ===== KẾT QUẢ ===== */
-#result {
-    max-width:900px;
-    margin:20px auto;
-    padding:15px;
-    background:white;
-    border-radius:10px;
-    box-shadow:0 3px 10px rgba(0,0,0,0.1);
-    font-size:1rem;
+#resultModal {
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:2000;
 }
+#resultContent {
+    background:white;
+    max-width:600px;
+    width:90%;
+    max-height:80%;
+    overflow-y:auto;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.3);
+}
+#resultContent h2 {margin-top:0;}
+.result-item {margin-bottom:12px; font-size:0.95rem;}
+.result-item.correct {color:#2ecc71;}
+.result-item.wrong {color:#e74c3c;}
 
 /* ===== RESPONSIVE ===== */
-@media (max-width:768px){
-    header h1 {font-size:1.3rem;}
-    #timer {font-size:1rem;}
-    .question-text {font-size:0.95rem;}
-    .answers button {font-size:0.9rem; padding:8px;}
-    #submitBtn {font-size:1rem; padding:10px;}
+@media(max-width:768px){
+    header h1{font-size:1.3rem;}
+    #timer{font-size:1rem;}
+    .question-text{font-size:0.95rem;}
+    .answers button{font-size:0.9rem;padding:8px;}
+    #submitBtn{font-size:1rem;padding:10px;}
 }
-@media (max-width:480px){
-    header h1 {font-size:1.1rem;}
-    #timer {font-size:0.9rem;}
-    .question-text {font-size:0.9rem;}
-    .answers button {font-size:0.85rem; padding:6px;}
-    #submitBtn {font-size:0.95rem; padding:8px;}
+@media(max-width:480px){
+    header h1{font-size:1.1rem;}
+    #timer{font-size:0.9rem;}
+    .question-text{font-size:0.9rem;}
+    .answers button{font-size:0.85rem;padding:6px;}
+    #submitBtn{font-size:0.95rem;padding:8px;}
 }
 </style>
 </head>
 <body>
 
 <header>
-    <h1>🔥 Bài Thi Trắc Nghiệm</h1>
-    <div id="timer">45:00</div>
+<h1>🔥 Bài Thi Trắc Nghiệm</h1>
+<div id="timer">45:00</div>
 </header>
 
 <div id="questionsContainer"></div>
 <button id="submitBtn">Nộp bài</button>
-<div id="result"></div>
+
+<!-- POPUP KẾT QUẢ -->
+<div id="resultModal">
+<div id="resultContent">
+<h2>Kết quả bài thi</h2>
+<div id="resultList"></div>
+<button onclick="closeResult()" style="margin-top:15px;padding:10px 15px;border:none;border-radius:6px;background:#3498db;color:white;cursor:pointer;">Đóng</button>
+</div>
+</div>
 
 <script>
 // ===== CÂU HỎI =====
 const rawQuestions = [
-    // Dán 200 câu vào đây
-    // Ví dụ:
+    // Dán 200 câu vào đây, ví dụ:
     {
         q: "Đồng chí cho biết chức năng của công tác tuyên truyền miệng?",
         answers:[
@@ -157,21 +171,27 @@ const rawQuestions = [
     }
 ];
 
-// ===== CHỌN NGẪU NHIÊN 50 CÂU =====
+// ===== CHỌN 50 CÂU NGẪU NHIÊN =====
 const TOTAL_QUESTIONS = 50;
 const questions = rawQuestions.sort(()=>0.5-Math.random()).slice(0,TOTAL_QUESTIONS);
-
 const container = document.getElementById("questionsContainer");
 
-// ===== HIỂN THỊ CÂU HỎI =====
+// ===== HIỂN THỊ VỚI RANDOM ĐÁP ÁN =====
 questions.forEach((q,i)=>{
-    const card = document.createElement("div");
+    const card=document.createElement("div");
     card.className="question-card";
+
+    // Random vị trí đáp án
+    let answerIndexes = [0,1,2,3];
+    answerIndexes.sort(()=>0.5-Math.random());
+    q.shuffledAnswers = answerIndexes.map(idx=>q.answers[idx]);
+    q.shuffledCorrect = answerIndexes.indexOf(q.correct);
+
     card.innerHTML=`<div class="question-text">Câu ${i+1}: ${q.q}</div><div class="answers"></div>`;
     const answersDiv = card.querySelector(".answers");
-    q.answers.forEach((a,j)=>{
-        const btn = document.createElement("button");
-        btn.textContent = a;
+    q.shuffledAnswers.forEach((a,j)=>{
+        const btn=document.createElement("button");
+        btn.textContent=a;
         btn.addEventListener("click",()=>{
             answersDiv.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
             btn.classList.add("selected");
@@ -183,17 +203,14 @@ questions.forEach((q,i)=>{
 });
 
 // ===== ĐỒNG HỒ 45 PHÚT =====
-let timeLeft = 45*60;
-const timerEl = document.getElementById("timer");
-const timerInterval = setInterval(()=>{
-    const min = Math.floor(timeLeft/60);
-    const sec = timeLeft%60;
-    timerEl.textContent = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+let timeLeft=45*60;
+const timerEl=document.getElementById("timer");
+const timerInterval=setInterval(()=>{
+    const min=Math.floor(timeLeft/60);
+    const sec=timeLeft%60;
+    timerEl.textContent=`${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
     if(timeLeft<=5*60) timerEl.classList.add("urgent");
-    if(timeLeft<=0){
-        clearInterval(timerInterval);
-        submitQuiz();
-    }
+    if(timeLeft<=0){clearInterval(timerInterval);submitQuiz();}
     timeLeft--;
 },1000);
 
@@ -202,19 +219,26 @@ document.getElementById("submitBtn").addEventListener("click",submitQuiz);
 
 function submitQuiz(){
     clearInterval(timerInterval);
-    let score=0;
-    questions.forEach((q,index)=>{
-        const btns = container.children[index].querySelectorAll("button");
+    const resultList = document.getElementById("resultList");
+    resultList.innerHTML="";
+    questions.forEach((q,i)=>{
+        const btns = container.children[i].querySelectorAll("button");
         btns.forEach((btn,idx)=>{
             btn.disabled=true;
-            if(idx===q.correct) btn.classList.add("correct");
-            if(q.userAnswer===idx && q.userAnswer!==q.correct) btn.classList.add("wrong");
+            if(idx===q.shuffledCorrect) btn.classList.add("correct");
+            if(q.userAnswer===idx && q.userAnswer!==q.shuffledCorrect) btn.classList.add("wrong");
         });
-        if(q.userAnswer===q.correct) score++;
+        const div = document.createElement("div");
+        div.className="result-item "+(q.userAnswer===q.shuffledCorrect?"correct":"wrong");
+        div.innerHTML=`Câu ${i+1}: ${q.userAnswer===q.shuffledCorrect?"Đúng":"Sai"} | Đáp án đúng: ${q.answers[q.correct]}`;
+        resultList.appendChild(div);
     });
-    document.getElementById("result").innerHTML=`<h2>Kết quả: ${score}/${TOTAL_QUESTIONS}</h2>`;
+    document.getElementById("resultModal").style.display="flex";
+}
+
+function closeResult(){
+    document.getElementById("resultModal").style.display="none";
 }
 </script>
-
 </body>
 </html>
