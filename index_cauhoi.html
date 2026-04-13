@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Câu Hỏi & Điều Luật 2026</title>
+  <style>
+    :root {
+      --gold:    #c8941a;
+      --gold-lt: #f0d080;
+      --red:     #b71c1c;
+      --red-dk:  #7f0000;
+      --cream:   #fdf6e3;
+      --text:    #2c1a00;
+      --muted:   #6b4c1e;
+      --border:  #d4a843;
+      --shadow:  rgba(100,40,0,0.18);
+      --blue:    #1565c0;
+      --blue-lt: #e3f0ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--red-dk);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── HEADER ── */
+    header {
+      width: 100%;
+      background: linear-gradient(135deg, var(--red-dk), var(--red) 60%, #c62828);
+      border-bottom: 3px solid var(--gold);
+      padding: 16px 20px 12px;
+      text-align: center;
+    }
+    header .star { font-size: 1.8rem; color: var(--gold); }
+    header h1 {
+      color: var(--gold-lt);
+      font-size: clamp(1rem, 3.2vw, 1.55rem);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      margin: 5px 0 2px;
+    }
+    header .subtitle { color: #ffcdd2; font-size: 0.8rem; font-style: italic; letter-spacing:.1em; }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      width: 100%;
+      max-width: 760px;
+      margin-top: 18px;
+      padding: 0 16px;
+      gap: 8px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px 4px;
+      border: none;
+      border-radius: 10px 10px 0 0;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: rgba(255,255,255,0.10);
+      color: rgba(240,208,128,0.7);
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--cream);
+      color: var(--red-dk);
+      border-bottom-color: var(--gold);
+    }
+    .tab-btn:hover:not(.active) { background: rgba(255,255,255,0.18); color: var(--gold-lt); }
+
+    /* ── MAIN ── */
+    main {
+      width: 100%;
+      max-width: 760px;
+      padding: 0 16px 40px;
+      flex: 1;
+    }
+
+    /* ── TAB PANELS ── */
+    .panel { display: none; padding-top: 16px; }
+    .panel.active { display: block; animation: fadeIn .35s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+    /* ── DATE NAV (shared) ── */
+    .date-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .nav-btn {
+      background: var(--gold); color: var(--red-dk);
+      border: none; border-radius: 8px; padding: 8px 16px;
+      font-size: 0.88rem; font-weight: 700; cursor: pointer;
+      transition: background .2s, transform .1s; white-space: nowrap;
+    }
+    .nav-btn:hover  { background: var(--gold-lt); transform: translateY(-1px); }
+    .nav-btn:active { transform: none; }
+    .nav-btn:disabled { opacity: .4; cursor: default; transform: none; }
+    .date-display {
+      background: rgba(255,255,255,.1); border: 1px solid rgba(212,168,67,.5);
+      border-radius: 8px; padding: 7px 18px;
+      color: var(--gold-lt); font-weight: 700; font-size: .95rem;
+      min-width: 170px; text-align: center;
+    }
+    input[type="date"] {
+      background: rgba(255,255,255,.12); border: 1px solid var(--gold);
+      border-radius: 8px; color: var(--gold-lt); font-size: .88rem; padding: 7px 10px; outline: none;
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(3); }
+
+    /* ── MONTH CHIPS ── */
+    .stats-row { display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin-bottom:16px; }
+    .month-chip {
+      background: rgba(255,255,255,.08); border: 1px solid rgba(212,168,67,.35);
+      border-radius: 20px; color: rgba(240,208,128,.75); font-size:.72rem;
+      padding: 3px 10px; cursor: pointer; transition: background .2s;
+    }
+    .month-chip:hover, .month-chip.active {
+      background: rgba(200,148,26,.3); border-color: var(--gold); color: var(--gold-lt);
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--cream); border-radius: 14px;
+      border: 2px solid var(--border); box-shadow: 0 8px 32px var(--shadow);
+      overflow: hidden;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--red), var(--red-dk));
+      padding: 14px 22px 12px; display: flex; align-items: center; gap: 12px;
+      border-bottom: 2px solid var(--gold);
+    }
+    .card-header .hicon { font-size: 2rem; }
+    .card-header .htitle { color: var(--gold-lt); font-size:.75rem; letter-spacing:.12em; font-weight:600; text-transform:uppercase; }
+    .card-header .hdate  { color: #fff; font-size: 1.05rem; font-weight: 800; }
+
+    /* Q&A BLOCK */
+    .qa-block { padding: 22px 26px; }
+    .qa-label {
+      font-size: .72rem; font-weight: 700; letter-spacing: .14em;
+      text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .qa-label::after { content:''; flex:1; height:1px; background: var(--border); opacity:.5; }
+    .qa-label.q { color: var(--red); }
+    .qa-label.a { color: #1a6600; }
+    .qa-q {
+      font-size: 1rem; font-weight: 600; color: var(--text);
+      line-height: 1.7; margin-bottom: 20px;
+      padding: 14px 16px; background: #fff8e1;
+      border-left: 4px solid var(--gold); border-radius: 0 8px 8px 0;
+    }
+    .qa-a {
+      font-size: .95rem; color: #1a3a00; line-height: 1.75;
+      padding: 14px 16px; background: #f1f8e9;
+      border-left: 4px solid #66bb6a; border-radius: 0 8px 8px 0;
+    }
+
+    /* SHOW/HIDE answer button */
+    .toggle-btn {
+      display: block; margin: 12px 0 0;
+      background: var(--red); color: #fff;
+      border: none; border-radius: 8px; padding: 8px 20px;
+      font-size: .88rem; font-weight: 700; cursor: pointer;
+      transition: background .2s;
+    }
+    .toggle-btn:hover { background: var(--red-dk); }
+    .hidden { display: none; }
+
+    /* ── WEEKLY LAW ── */
+    .week-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .week-card {
+      background: var(--cream); border-radius: 14px;
+      border: 2px solid var(--border); box-shadow: 0 8px 32px var(--shadow);
+      overflow: hidden;
+    }
+    .week-card-header {
+      background: linear-gradient(135deg, #1a5276, #1565c0);
+      padding: 14px 22px 12px; display: flex; align-items: center; gap: 12px;
+      border-bottom: 2px solid #5dade2;
+    }
+    .week-card-header .hicon { font-size:2rem; }
+    .week-card-header .htitle { color:#aed6f1; font-size:.75rem; letter-spacing:.12em; font-weight:600; text-transform:uppercase; }
+    .week-card-header .hweek  { color:#fff; font-size:1.05rem; font-weight:800; }
+
+    .law-block { padding: 22px 26px; }
+    .law-title {
+      font-size: 1.05rem; font-weight: 700; color: var(--blue);
+      margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 2px solid #aed6f1; line-height: 1.5;
+    }
+    .law-content {
+      font-size: .95rem; color: var(--text); line-height: 1.8;
+      white-space: pre-wrap;
+    }
+
+    .week-chips {
+      display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin-bottom:16px;
+    }
+    .week-chip {
+      background: rgba(255,255,255,.08); border: 1px solid rgba(93,173,226,.35);
+      border-radius: 20px; color: rgba(174,214,241,.75); font-size:.72rem;
+      padding: 3px 10px; cursor: pointer; transition: background .2s;
+    }
+    .week-chip:hover, .week-chip.active {
+      background: rgba(21,101,192,.35); border-color: #5dade2; color: #aed6f1;
+    }
+
+    /* ── NO DATA ── */
+    .no-data { text-align:center; padding:44px 20px; color:var(--muted); }
+    .no-data .nd-icon { font-size:2.8rem; margin-bottom:10px; }
+
+    footer {
+      color: rgba(255,220,130,.6); font-size:.74rem;
+      text-align:center; padding:14px; letter-spacing:.06em;
+    }
+
+    @media(max-width:500px){
+      main{padding:0 8px 32px;}
+      .qa-block,.law-block{padding:16px;}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="star">⚖</div>
+  <h1>MỖI NGÀY MỘT CÂU HỎI — MỖI TUẦN MỘT ĐIỀU LUẬT</h1>
+  <div class="subtitle">Hình thức giáo dục pháp luật — 6 tháng đầu năm 2026</div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" data-tab="tab-cauhoi">📋 Câu hỏi hàng ngày</button>
+  <button class="tab-btn"        data-tab="tab-tuan"  >📜 Tuần pháp luật</button>
+</div>
+
+<main>
+  <!-- ══════ TAB 1: DAILY Q&A ══════ -->
+  <div class="panel active" id="tab-cauhoi">
+    <div class="stats-row" id="monthNav"></div>
+    <div class="date-nav">
+      <button class="nav-btn" id="btnPrev">◀ Hôm trước</button>
+      <div class="date-display" id="displayDate">—</div>
+      <button class="nav-btn" id="btnNext">Hôm sau ▶</button>
+      <input type="date" id="datePicker" min="2026-01-01" max="2026-06-30"/>
+      <button class="nav-btn" id="btnToday">Hôm nay</button>
+    </div>
+    <div class="card" id="qaCard">
+      <div class="no-data"><div class="nd-icon">⏳</div><p>Đang tải…</p></div>
+    </div>
+  </div>
+
+  <!-- ══════ TAB 2: WEEKLY LAW ══════ -->
+  <div class="panel" id="tab-tuan">
+    <div class="week-chips" id="weekChips"></div>
+    <div class="week-nav">
+      <button class="nav-btn" id="btnWPrev" style="background:#5dade2;color:#fff">◀ Tuần trước</button>
+      <div class="date-display" id="displayWeek">—</div>
+      <button class="nav-btn" id="btnWNext" style="background:#5dade2;color:#fff">Tuần sau ▶</button>
+      <button class="nav-btn" id="btnWNow"  style="background:#5dade2;color:#fff">Tuần này</button>
+    </div>
+    <div class="week-card" id="weekCard">
+      <div class="no-data"><div class="nd-icon">⏳</div><p>Đang tải…</p></div>
+    </div>
+  </div>
+</main>
+
+<footer>Trung đoàn 1 — Sư đoàn 324 &mdash; Ngân hàng câu hỏi 6 tháng đầu năm 2026</footer>
+
+<script>
+// ── Data holders ──
+let DAILY = {};
+let WEEKS  = {};
+let currentDate = '';
+let currentWeek = '';
+
+const MONTHS_VI = ['','Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
+                   'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+const DAYS_VI   = ['Chủ nhật','Thứ hai','Thứ ba','Thứ tư','Thứ năm','Thứ sáu','Thứ bảy'];
+const pad = n => String(n).padStart(2,'0');
+
+// ── Tabs ──
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ══════════════════════ DAILY Q&A ══════════════════════
+function allDates() { return Object.keys(DAILY).sort(); }
+
+function adjacentDate(key, dir) {
+  const dates = allDates();
+  const idx = dates.indexOf(key);
+  if (idx === -1) {
+    if (dir === -1) { const b = dates.filter(d=>d<key); return b.length ? b[b.length-1] : null; }
+    else            { const a = dates.filter(d=>d>key); return a.length ? a[0] : null; }
+  }
+  const n = idx + dir;
+  return (n>=0 && n<dates.length) ? dates[n] : null;
+}
+
+function todayKey() {
+  const now = new Date();
+  return `2026-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+}
+
+function formatDate(key) {
+  if (!key) return '—';
+  const [y,m,d] = key.split('-').map(Number);
+  const dow = DAYS_VI[new Date(y,m-1,d).getDay()];
+  return `${dow}, ${d}/${m}/${y}`;
+}
+
+function renderQA(key) {
+  const card = document.getElementById('qaCard');
+  const e    = DAILY[key];
+
+  if (!e) {
+    const near = adjacentDate(key,1) || adjacentDate(key,-1);
+    card.innerHTML = `<div class="no-data">
+      <div class="nd-icon">🌸</div>
+      <p>Chưa có câu hỏi cho ngày này.${near ? `<br><button class="nav-btn" style="margin-top:12px" onclick="goTo('${near}')">Xem ngày gần nhất</button>`:''}
+      </p></div>`;
+    return;
+  }
+
+  const [y,m,d] = key.split('-').map(Number);
+  const dow = DAYS_VI[new Date(y,m-1,d).getDay()];
+
+  card.innerHTML = `
+    <div class="card-header">
+      <div class="hicon">❓</div>
+      <div>
+        <div class="htitle">Mỗi Ngày Một Câu Hỏi — Một Đáp Án</div>
+        <div class="hdate">${dow}, ngày ${d} ${MONTHS_VI[m]} ${y}</div>
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-label q">📋 Câu hỏi</div>
+      <div class="qa-q">${e.cauhoi}</div>
+      <button class="toggle-btn" id="toggleAns" onclick="toggleAnswer()">👁 Xem đáp án</button>
+      <div id="answerBlock" class="hidden">
+        <div class="qa-label a" style="margin-top:16px">✅ Đáp án</div>
+        <div class="qa-a">${e.dapan}</div>
+      </div>
+    </div>`;
+}
+
+function toggleAnswer() {
+  const blk = document.getElementById('answerBlock');
+  const btn = document.getElementById('toggleAns');
+  const hidden = blk.classList.toggle('hidden');
+  btn.textContent = hidden ? '👁 Xem đáp án' : '🙈 Ẩn đáp án';
+}
+
+function goTo(key) {
+  currentDate = key;
+  document.getElementById('displayDate').textContent = formatDate(key);
+  document.getElementById('datePicker').value = key;
+  document.getElementById('btnPrev').disabled = !adjacentDate(key,-1);
+  document.getElementById('btnNext').disabled = !adjacentDate(key,1);
+  const m = parseInt(key.split('-')[1]);
+  document.querySelectorAll('.month-chip').forEach(c => c.classList.toggle('active', +c.dataset.month===m));
+  renderQA(key);
+}
+
+function buildMonthNav() {
+  const counts = {};
+  allDates().forEach(k => { const m=k.split('-')[1]; counts[m]=(counts[m]||0)+1; });
+  const nav = document.getElementById('monthNav');
+  for (let m=1; m<=6; m++) {
+    const mm=pad(m), cnt=counts[mm]||0;
+    const chip=document.createElement('button');
+    chip.className='month-chip'; chip.dataset.month=m;
+    chip.textContent=`T${m} (${cnt})`; chip.title=`${MONTHS_VI[m]} — ${cnt} ngày`;
+    chip.addEventListener('click', ()=>{ const f=allDates().find(k=>k.startsWith(`2026-${mm}-`)); if(f)goTo(f); });
+    nav.appendChild(chip);
+  }
+}
+
+document.getElementById('btnPrev').addEventListener('click', ()=>{ const d=adjacentDate(currentDate,-1); if(d)goTo(d); });
+document.getElementById('btnNext').addEventListener('click', ()=>{ const d=adjacentDate(currentDate,1);  if(d)goTo(d); });
+document.getElementById('btnToday').addEventListener('click', ()=>goTo(todayKey()));
+document.getElementById('datePicker').addEventListener('change', e=>goTo(e.target.value));
+
+document.addEventListener('keydown', e => {
+  if (document.getElementById('tab-cauhoi').classList.contains('active')) {
+    if (e.key==='ArrowLeft')  { const d=adjacentDate(currentDate,-1); if(d)goTo(d); }
+    if (e.key==='ArrowRight') { const d=adjacentDate(currentDate,1);  if(d)goTo(d); }
+  }
+});
+
+// ══════════════════════ WEEKLY LAW ══════════════════════
+function allWeeks() { return Object.keys(WEEKS).sort((a,b)=>{ const wa=WEEKS[a],wb=WEEKS[b]; return wa.month-wb.month||wa.week-wb.week; }); }
+
+function adjacentWeek(key, dir) {
+  const wks = allWeeks();
+  const idx = wks.indexOf(key);
+  if (idx===-1) return null;
+  const n = idx+dir;
+  return (n>=0&&n<wks.length) ? wks[n] : null;
+}
+
+function currentWeekKey() {
+  // Find week that contains today's date (in 2026 context)
+  const now  = new Date();
+  const date = new Date(2026, now.getMonth(), now.getDate());
+  const m    = date.getMonth()+1;
+  const d    = date.getDate();
+  // Week 1 = days 1-7, Week 2 = 8-14, etc.
+  const wk   = Math.ceil(d / 7);
+  const key  = `2026-${pad(m)}-W${wk}`;
+  if (WEEKS[key]) return key;
+  return allWeeks()[0];
+}
+
+function renderWeek(key) {
+  const card = document.getElementById('weekCard');
+  const e    = WEEKS[key];
+  if (!e) { card.innerHTML = `<div class="no-data"><div class="nd-icon">📖</div><p>Không có dữ liệu.</p></div>`; return; }
+
+  card.innerHTML = `
+    <div class="week-card-header">
+      <div class="hicon">📜</div>
+      <div>
+        <div class="htitle">Mỗi Tuần Một Điều Luật</div>
+        <div class="hweek">Tuần ${e.week} — ${MONTHS_VI[e.month]} 2026</div>
+      </div>
+    </div>
+    <div class="law-block">
+      <div class="law-title">${e.title}</div>
+      <div class="law-content">${e.content}</div>
+    </div>`;
+}
+
+function goToWeek(key) {
+  currentWeek = key;
+  const e = WEEKS[key];
+  document.getElementById('displayWeek').textContent = e ? `Tuần ${e.week} — ${MONTHS_VI[e.month]}` : '—';
+  document.getElementById('btnWPrev').disabled = !adjacentWeek(key,-1);
+  document.getElementById('btnWNext').disabled = !adjacentWeek(key,1);
+  document.querySelectorAll('.week-chip').forEach(c => c.classList.toggle('active', c.dataset.key===key));
+  renderWeek(key);
+}
+
+function buildWeekChips() {
+  const chips = document.getElementById('weekChips');
+  allWeeks().forEach(k => {
+    const e = WEEKS[k];
+    const chip = document.createElement('button');
+    chip.className='week-chip'; chip.dataset.key=k;
+    chip.textContent=`T${e.month}/W${e.week}`;
+    chip.title=`Tuần ${e.week} Tháng ${e.month}: ${e.title.substring(0,50)}`;
+    chip.addEventListener('click', ()=>goToWeek(k));
+    chips.appendChild(chip);
+  });
+}
+
+document.getElementById('btnWPrev').addEventListener('click', ()=>{ const k=adjacentWeek(currentWeek,-1); if(k)goToWeek(k); });
+document.getElementById('btnWNext').addEventListener('click', ()=>{ const k=adjacentWeek(currentWeek,1);  if(k)goToWeek(k); });
+document.getElementById('btnWNow').addEventListener('click',  ()=>goToWeek(currentWeekKey()));
+
+// ══════════════════════ LOAD DATA ══════════════════════
+Promise.all([
+  fetch('data_cauhoi.json').then(r=>r.json()),
+  fetch('data_tuanphapluat.json').then(r=>r.json())
+]).then(([daily, weeks]) => {
+  DAILY = daily;
+  WEEKS = weeks;
+  buildMonthNav();
+  buildWeekChips();
+  // Init daily tab
+  const today = todayKey();
+  const start = DAILY[today] ? today : (adjacentDate(today,1)||adjacentDate(today,-1)||allDates()[0]);
+  goTo(start);
+  // Init weekly tab
+  goToWeek(currentWeekKey());
+}).catch(()=>{
+  document.getElementById('qaCard').innerHTML   = `<div class="no-data"><div class="nd-icon">⚠️</div><p>Không tải được <code>data_cauhoi.json</code></p></div>`;
+  document.getElementById('weekCard').innerHTML = `<div class="no-data"><div class="nd-icon">⚠️</div><p>Không tải được <code>data_tuanphapluat.json</code></p></div>`;
+});
+</script>
+</body>
+</html>
