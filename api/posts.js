@@ -35,13 +35,11 @@ export default async function handler(req, res) {
 
     // Bước 2: Resolve page identifier (URL → page ID hoặc username)
     let pageId = page.trim();
-
-    // Xử lý nếu user nhập full URL
     const urlMatch = pageId.match(/facebook\.com\/(?:pages\/[^/]+\/)?([^/?#]+)/);
     if (urlMatch) pageId = urlMatch[1];
 
     // Bước 3: Lấy page info + posts
-    const fields = 'id,name,picture{url},fan_count';
+    const fields     = 'id,name,picture{url},fan_count';
     const postFields = 'id,message,story,full_picture,created_time,likes.summary(true),comments.summary(true),shares,permalink_url';
 
     const pageRes = await fetch(
@@ -52,7 +50,7 @@ export default async function handler(req, res) {
     if (pageData.error) {
       return res.status(400).json({
         error: pageData.error.message || 'Page not found or not public',
-        code: pageData.error.code,
+        code:  pageData.error.code,
       });
     }
 
@@ -65,24 +63,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: postsData.error.message });
     }
 
-    // Format dữ liệu trả về
     const posts = (postsData.data || []).map(p => ({
-      id:          p.id,
-      message:     p.message || p.story || '(No text)',
-      image:       p.full_picture || null,
-      created:     p.created_time,
-      likes:       p.likes?.summary?.total_count || 0,
-      comments:    p.comments?.summary?.total_count || 0,
-      shares:      p.shares?.count || 0,
-      url:         p.permalink_url || `https://facebook.com/${p.id}`,
+      id:       p.id,
+      message:  p.message || p.story || '(No text)',
+      image:    p.full_picture || null,
+      created:  p.created_time,
+      likes:    p.likes?.summary?.total_count || 0,
+      comments: p.comments?.summary?.total_count || 0,
+      shares:   p.shares?.count || 0,
+      url:      p.permalink_url || `https://facebook.com/${p.id}`,
     }));
 
     return res.status(200).json({
       page: {
-        id:       pageData.id,
-        name:     pageData.name,
-        avatar:   pageData.picture?.data?.url || null,
-        fans:     pageData.fan_count || 0,
+        id:     pageData.id,
+        name:   pageData.name,
+        avatar: pageData.picture?.data?.url || null,
+        fans:   pageData.fan_count || 0,
       },
       posts,
       total: posts.length,

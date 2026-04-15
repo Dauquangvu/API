@@ -2,33 +2,21 @@
 // Dùng biến môi trường: AI_BASE_URL, AI_API_KEY, AI_MODEL
 
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { prompt } = req.body || {};
+  if (!prompt) return res.status(400).json({ error: 'Missing prompt' });
 
-  if (!prompt) {
-    return res.status(400).json({ error: 'Missing prompt' });
-  }
+  const API_KEY  = process.env.AI_API_KEY;
+  const BASE_URL = process.env.AI_BASE_URL || 'https://api.anthropic.com';
+  const MODEL    = process.env.AI_MODEL    || 'claude-3-haiku-20240307';
 
-  // Đọc từ env vars (set trong Vercel Dashboard)
-  const API_KEY   = process.env.AI_API_KEY;
-  const BASE_URL  = process.env.AI_BASE_URL  || 'https://api.anthropic.com';
-  const MODEL     = process.env.AI_MODEL     || 'claude-3-haiku-20240307';
-
-  if (!API_KEY) {
-    return res.status(500).json({ error: 'AI_API_KEY not configured' });
-  }
+  if (!API_KEY) return res.status(500).json({ error: 'AI_API_KEY not configured' });
 
   try {
     const endpoint = `${BASE_URL.replace(/\/$/, '')}/v1/messages`;
@@ -43,9 +31,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model:      MODEL,
         max_tokens: 256,
-        messages: [
-          { role: 'user', content: prompt }
-        ],
+        messages: [{ role: 'user', content: prompt }],
       }),
     });
 
@@ -59,8 +45,6 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-
-    // Lấy text từ response
     const result =
       data?.content?.[0]?.text ||
       data?.choices?.[0]?.message?.content ||
